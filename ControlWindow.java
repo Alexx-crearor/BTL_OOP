@@ -32,24 +32,25 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
-    setup();
+        setup();
     }
 
-    private void setup() {
+    public void setup() {
+        amount = 0;
         // Paddle
         player.width = 120;
         player.height = 20;
         player.x = (WIDTH - player.width) / 2;
         player.y = HEIGHT - player.height - 50;
-        player.dx = 5;
+    player.dx = 3;
 
         // Ball
         ball.width = 20;
         ball.height = 20;
         ball.x = (WIDTH - ball.width) / 2;
         ball.y = (HEIGHT - ball.height) / 2;
-        ball.dx = -2;
-        ball.dy = 2;
+    ball.dx = -1;
+    ball.dy = 1;
 
         // Bricks
         bricks = new Item[BRICK_X * BRICK_Y];
@@ -88,10 +89,10 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         if (gameWon) {
             drawCenteredString(g, "You Win!", WIDTH, HEIGHT);
         }
-        super.paintComponent(g);
 
         // Vẽ paddle
         g.setColor(Color.BLUE);
@@ -108,10 +109,10 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
             g.setColor(Color.BLACK);
             g.drawRect(bricks[i].x, bricks[i].y, BRICK_WIDTH + 1, BRICK_HEIGHT + 1);
         }
-    // Vẽ điểm với font to
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("Arial", Font.BOLD, 20));
-    g.drawString("Score: " + score, 10, 30);
+        // Vẽ điểm với font to
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + score, 10, 30);
 
         // Vẽ chữ Game Over nếu thua
         if (gameOver) {
@@ -182,8 +183,9 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
         Rectangle playerRect = new Rectangle(player.x, player.y, player.width, player.height);
         if (ballRect.intersects(playerRect)) {
             ball.dy = -Math.abs(ball.dy);
-            ball.dx = random.nextInt(5 - 2) + 2;
-            ball.dx = random.nextInt(2) == 1 ? ball.dx : -ball.dx;
+            // Tạo độ lệch ngẫu nhiên khi bóng chạm paddle
+            int speed = 1;
+            ball.dx = random.nextInt(2) == 1 ? speed : -speed;
         }
         // Kiểm tra thắng
         boolean allBricksGone = true;
@@ -197,5 +199,4 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
             gameWon = true;
         }
     }
-
 }
