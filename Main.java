@@ -9,11 +9,13 @@ public class Main extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setVisible(true);
-    this.add(cw);
-    //this.pack();
+        this.add(cw);
+        //this.pack();
     }
 
     public static void main(String[] args) {
-        new Main();
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            new Menu().setVisible(true);
+        });
     }
 }
