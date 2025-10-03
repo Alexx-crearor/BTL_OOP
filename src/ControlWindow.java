@@ -201,16 +201,30 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
     
     private void updateBallPosition() {
         ball.x += ball.dx;
-        checkBrickCollision(true);
         ball.y += ball.dy;
-        checkBrickCollision(false);
+        checkBrickCollision();
     }
     
-    private void checkBrickCollision(boolean horizontal) {
+    private void checkBrickCollision() {
         Rectangle ballRect = new Rectangle(ball.x, ball.y, ball.width, ball.height);
         for (int i = 0; i < amount; i++) {
             if (bricks[i].x >= 0 && ballRect.intersects(new Rectangle(bricks[i].x, bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT))) {
-                if (horizontal) ball.dx *= -1; else ball.dy *= -1;
+                // Tính toán hướng va chạm
+                int ballCenterX = ball.x + ball.width / 2;
+                int ballCenterY = ball.y + ball.height / 2;
+                int brickCenterX = bricks[i].x + BRICK_WIDTH / 2;
+                int brickCenterY = bricks[i].y + BRICK_HEIGHT / 2;
+                
+                int dx = Math.abs(ballCenterX - brickCenterX);
+                int dy = Math.abs(ballCenterY - brickCenterY);
+                
+                // Va chạm ngang hoặc dọc
+                if (dx > dy) {
+                    ball.dx *= -1;
+                } else {
+                    ball.dy *= -1;
+                }
+                
                 bricks[i].x = -100;
                 score++;
                 break;
