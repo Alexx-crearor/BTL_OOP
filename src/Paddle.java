@@ -28,8 +28,8 @@ public class Paddle extends Item {
     
     private void loadImages() {
         try {
-            File normalFile = new File("Image/VausII.png");
-            File enlargedFile = new File("Image/VausIIwEnlarge.png");
+            File normalFile = new File("../Image/VausII.png");
+            File enlargedFile = new File("../Image/VausIIwEnlarge.png");
             
             if (normalFile.exists()) {
                 normalImage = ImageIO.read(normalFile);
