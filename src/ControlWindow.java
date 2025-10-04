@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ControlWindow extends JPanel implements Runnable, KeyListener {
@@ -19,7 +22,12 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
     public boolean gameOver = false;
     public boolean gameWon = false;
     public int score = 0;
-    private boolean ballStarted = false; // Bóng chỉ di chuyển khi paddle di chuyển
+    private boolean ballStarted = false;
+    
+    // Hình ảnh
+    private HashMap<String, Image> images = new HashMap<>();
+    private Image paddleImage;
+    private Image ballImage;
 
     // Bricks
     public static final int BRICK_X = 10;
@@ -33,7 +41,28 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
+        loadImages();
         setup();
+    }
+    
+    private void loadImages() {
+        try {
+            // Load paddle image
+            paddleImage = ImageIO.read(new File("../Image/VausII.png"));
+            
+            // Load brick images
+            images.put("RED", ImageIO.read(new File("../Image/RedWall.png")));
+            images.put("ORANGE", ImageIO.read(new File("../Image/OrangeWall.png")));
+            images.put("GREEN", ImageIO.read(new File("../Image/GreenWall.png")));
+            images.put("CYAN", ImageIO.read(new File("../Image/CyanWall.png")));
+            images.put("BLUE", ImageIO.read(new File("../Image/BlueWall.png")));
+            images.put("LIGHT_BLUE", ImageIO.read(new File("../Image/LightBlueWall.png")));
+            images.put("GOLD", ImageIO.read(new File("../Image/GoldWall.png")));
+            images.put("SILVER", ImageIO.read(new File("../Image/SilverWall.png")));
+            images.put("REGENERATING", ImageIO.read(new File("../Image/RegeneratingWall.png")));
+        } catch (Exception e) {
+            System.out.println("Không load được hình ảnh, sử dụng màu thay thế");
+        }
     }
 
     public void setup() {
@@ -97,8 +126,12 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
         }
 
         // Vẽ paddle
-        g.setColor(Color.BLUE);
-        g.fillRect(player.x, player.y, player.width, player.height);
+        if (paddleImage != null) {
+            g.drawImage(paddleImage, player.x, player.y, player.width, player.height, this);
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(player.x, player.y, player.width, player.height);
+        }
 
         // Vẽ bóng
         g.setColor(Color.RED);
@@ -106,12 +139,22 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
 
         // Vẽ gạch
         for (int i = 0; i < amount; i++) {
-            g.setColor(Color.GREEN);
-            g.fillRect(bricks[i].x, bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
-            g.setColor(Color.BLACK);
-            g.drawRect(bricks[i].x, bricks[i].y, BRICK_WIDTH + 1, BRICK_HEIGHT + 1);
+            // Chọn màu gạch ngẫu nhiên để có đa dạng
+            String[] colors = {"RED", "ORANGE", "GREEN", "CYAN", "BLUE"};
+            int colorIndex = i % colors.length;
+            Image brickImg = images.get(colors[colorIndex]);
+            
+            if (brickImg != null) {
+                g.drawImage(brickImg, bricks[i].x, bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT, this);
+            } else {
+                g.setColor(Color.GREEN);
+                g.fillRect(bricks[i].x, bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+                g.setColor(Color.BLACK);
+                g.drawRect(bricks[i].x, bricks[i].y, BRICK_WIDTH + 1, BRICK_HEIGHT + 1);
+            }
         }
-        // Vẽ điểm với font to
+        
+        // Vẽ điểm
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + score, 10, 30);
