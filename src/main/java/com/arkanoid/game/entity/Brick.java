@@ -1,13 +1,7 @@
-package com.arkanoid.game.entity;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
-
 import javax.imageio.ImageIO;
 
 public class Brick extends Item {
@@ -19,15 +13,15 @@ public class Brick extends Item {
     
     // Loại gạch
     public enum BrickType {
-        RED(1, new Color(220, 20, 60), "/Image/RedWall.png"),
-        ORANGE(1, new Color(255, 140, 0), "/Image/OrangeWall.png"),
-        GREEN(1, new Color(34, 139, 34), "/Image/GreenWall.png"),
-        CYAN(2, new Color(0, 206, 209), "/Image/CyanWall.png"),
-        BLUE(2, new Color(30, 144, 255), "/Image/BlueWall.png"),
-        LIGHT_BLUE(2, new Color(135, 206, 250), "/Image/LightBlueWall.png"),
-        GOLD(3, new Color(255, 215, 0), "/Image/GoldWall.png"),
-        SILVER(4, new Color(192, 192, 192), "/Image/SilverWall.png"),
-        REGENERATING(999, new Color(138, 43, 226), "/Image/RegeneratingWall.png");
+        RED(1, new Color(220, 20, 60), "../Image/RedWall.png"),
+        ORANGE(1, new Color(255, 140, 0), "../Image/OrangeWall.png"),
+        GREEN(1, new Color(34, 139, 34), "../Image/GreenWall.png"),
+        CYAN(2, new Color(0, 206, 209), "../Image/CyanWall.png"),
+        BLUE(2, new Color(30, 144, 255), "../Image/BlueWall.png"),
+        LIGHT_BLUE(2, new Color(135, 206, 250), "../Image/LightBlueWall.png"),
+        GOLD(3, new Color(255, 215, 0), "../Image/GoldWall.png"),
+        SILVER(4, new Color(192, 192, 192), "../Image/SilverWall.png"),
+        REGENERATING(999, new Color(138, 43, 226), "../Image/RegeneratingWall.png");
         
         public final int hits;
         public final Color color;
@@ -60,14 +54,10 @@ public class Brick extends Item {
     private static void loadImageIfNeeded(BrickType type) {
         if (!imageCache.containsKey(type)) {
             try {
-                // Load từ classpath resources
-                java.net.URL imgURL = Brick.class.getResource(type.imagePath);
-                if (imgURL != null) {
-                    BufferedImage img = ImageIO.read(imgURL);
+                File imageFile = new File(type.imagePath);
+                if (imageFile.exists()) {
+                    BufferedImage img = ImageIO.read(imageFile);
                     imageCache.put(type, img);
-                } else {
-                    // Không tìm thấy resource, dùng màu thay thế
-                    imageCache.put(type, null);
                 }
             } catch (Exception e) {
                 // Không load được, sẽ dùng màu thay thế
