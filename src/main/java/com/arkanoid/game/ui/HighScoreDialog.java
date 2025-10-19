@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.arkanoid.game.util.FontManager;
+
 /**
  * Dialog nhập tên khi đạt high score
  */
@@ -27,7 +29,7 @@ public class HighScoreDialog extends JDialog {
     private int rank;
     
     public HighScoreDialog(JFrame parent, int score, int rank) {
-        super(parent, "🎉 CONGRATULATIONS! 🎉", true);
+        super(parent, "CONGRATULATIONS!", true);
         this.score = score;
         this.rank = rank;
         
@@ -55,18 +57,18 @@ public class HighScoreDialog extends JDialog {
         titlePanel.setBackground(new Color(20, 20, 40));
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         
-        JLabel congratsLabel = new JLabel("🎊 CHÚC MỪNG! 🎊");
-        congratsLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        JLabel congratsLabel = new JLabel("CONGRATULATIONS!");
+        congratsLabel.setFont(FontManager.getFont(Font.BOLD, 32));
         congratsLabel.setForeground(new Color(255, 215, 0));
         congratsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        JLabel rankLabel = new JLabel("Bạn đã đạt vị trí #" + rank + " trong bảng xếp hạng!");
-        rankLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        JLabel rankLabel = new JLabel("You ranked #" + rank + " on the leaderboard!");
+        rankLabel.setFont(FontManager.getFont(Font.BOLD, 20));
         rankLabel.setForeground(new Color(255, 255, 100));
         rankLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        JLabel scoreLabel = new JLabel("Điểm số: " + score);
-        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        JLabel scoreLabel = new JLabel("Score: " + score);
+        scoreLabel.setFont(FontManager.getFont(Font.PLAIN, 18));
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -82,12 +84,12 @@ public class HighScoreDialog extends JDialog {
         inputPanel.setBackground(new Color(20, 20, 40));
         inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20));
         
-        JLabel nameLabel = new JLabel("Nhập tên của bạn:");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel nameLabel = new JLabel("Enter your name:");
+        nameLabel.setFont(FontManager.getFont(Font.BOLD, 16));
         nameLabel.setForeground(Color.WHITE);
         
         nameField = new JTextField(15);
-        nameField.setFont(new Font("Arial", Font.PLAIN, 18));
+        nameField.setFont(FontManager.getFont(Font.PLAIN, 18));
         nameField.setHorizontalAlignment(JTextField.CENTER);
         nameField.addActionListener(e -> submitName());
         
@@ -99,16 +101,16 @@ public class HighScoreDialog extends JDialog {
         buttonPanel.setBackground(new Color(20, 20, 40));
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         
-        JButton okButton = new JButton("✓ Lưu");
-        okButton.setFont(new Font("Arial", Font.BOLD, 18));
+        JButton okButton = new JButton("Save");
+        okButton.setFont(FontManager.getFont(Font.BOLD, 18));
         okButton.setPreferredSize(new Dimension(120, 40));
         okButton.setBackground(new Color(0, 150, 0));
         okButton.setForeground(Color.WHITE);
         okButton.setFocusPainted(false);
         okButton.addActionListener(e -> submitName());
         
-        JButton cancelButton = new JButton("✗ Bỏ qua");
-        cancelButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        JButton cancelButton = new JButton("Skip");
+        cancelButton.setFont(FontManager.getFont(Font.PLAIN, 16));
         cancelButton.setPreferredSize(new Dimension(120, 40));
         cancelButton.setBackground(new Color(150, 150, 150));
         cancelButton.setForeground(Color.WHITE);
@@ -130,8 +132,8 @@ public class HighScoreDialog extends JDialog {
         String name = nameField.getText().trim();
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
-                "Vui lòng nhập tên!", 
-                "Lỗi", 
+                "Please enter your name!", 
+                "Error", 
                 JOptionPane.WARNING_MESSAGE);
             nameField.requestFocus();
             return;

@@ -18,15 +18,15 @@ public class PowerUp extends GameObject {
     
     // Loại power-up
     public enum PowerUpType {
-        ENLARGE("/Image/Enlarge.gif", "Mở rộng paddle"),
-        REDUCE("/Image/Reduce.gif", "Thu nhỏ paddle"),
-        LASER("/Image/Laser.gif", "Laser bắn"),
-        SLOW("/Image/Slow.gif", "Làm chậm bóng"),
-        CATCH("/Image/Catch.gif", "Bắt bóng"),
-        TWIN("/Image/Twin.gif", "Chia đôi bóng"),
-        DISRUPT("/Image/Disrupt.gif", "Nhiều bóng"),
-        MEGABALL("/Image/Megaball.gif", "Bóng khổng lồ"),
-        INCANDESCENCE("/Image/Incandescence.gif", "Bóng xuyên thủng");
+        ENLARGE("/Image/Enlarge.gif", "Enlarge paddle"),
+        REDUCE("/Image/Reduce.gif", "Reduce paddle"),
+        LASER("/Image/Laser.gif", "Laser shot"),
+        SLOW("/Image/Slow.gif", "Slow ball"),
+        CATCH("/Image/Catch.gif", "Catch ball"),
+        TWIN("/Image/Twin.gif", "Twin ball"),
+        DISRUPT("/Image/Disrupt.gif", "Multiple balls"),
+        MEGABALL("/Image/Megaball.gif", "Mega ball"),
+        INCANDESCENCE("/Image/Incandescence.gif", "Pierce ball");
         
         public final String imagePath;
         public final String description;

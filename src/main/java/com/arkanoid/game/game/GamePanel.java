@@ -24,6 +24,7 @@ import com.arkanoid.game.entity.Laser;
 import com.arkanoid.game.entity.Paddle;
 import com.arkanoid.game.entity.PowerUp;
 import com.arkanoid.game.ui.HighScoreDialog;
+import com.arkanoid.game.util.FontManager;
 import com.arkanoid.game.util.HighScoreManager;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
@@ -83,12 +84,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             java.net.URL imgURL = getClass().getResource("/Image/background1.png");
             if (imgURL != null) {
                 backgroundImage = ImageIO.read(imgURL);
-                System.out.println("✅ Đã load background thành công!");
+                System.out.println("Background loaded successfully!");
             } else {
-                System.out.println("❌ Không tìm thấy resource: /Image/background1.png");
+                System.out.println("Resource not found: /Image/background1.png");
             }
         } catch (Exception e) {
-            System.out.println("❌ Lỗi khi load background: " + e.getMessage());
+            System.out.println("Error loading background: " + e.getMessage());
             backgroundImage = null;
         }
     }
@@ -430,7 +431,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     
     private void drawUI(Graphics g) {
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 18));
+        g.setFont(FontManager.getFont(Font.BOLD, 18));
         String[] info = {"Score: " + score, "Lives: " + lives, "Level: " + levelNumber};
         for (int i = 0; i < info.length; i++) {
             g.drawString(info[i], 10, 25 + i * 25);
@@ -455,7 +456,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
     
     private void drawCenteredText(Graphics g, String text, int fontSize, int yOffset) {
-        g.setFont(new Font("Arial", fontSize > 35 ? Font.BOLD : Font.PLAIN, fontSize));
+        g.setFont(FontManager.getFont(fontSize > 35 ? Font.BOLD : Font.PLAIN, fontSize));
         FontMetrics fm = g.getFontMetrics();
         int x = (WIDTH - fm.stringWidth(text)) / 2;
         int y = HEIGHT / 2 + yOffset;
@@ -537,7 +538,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 String playerName = dialog.getPlayerName();
                 if (playerName != null && !playerName.trim().isEmpty()) {
                     highScoreManager.addHighScore(playerName, score);
-                    System.out.println("✅ High score saved: " + playerName + " - " + score);
+                    System.out.println("High score saved: " + playerName + " - " + score);
                 }
             });
         }

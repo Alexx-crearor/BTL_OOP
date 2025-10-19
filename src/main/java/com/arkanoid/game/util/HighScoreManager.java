@@ -35,7 +35,7 @@ public class HighScoreManager {
         if (!Files.exists(filePath)) {
             // File chưa tồn tại, bắt đầu với danh sách rỗng
             // Chỉ lưu khi có người chơi game over và nhập tên
-            System.out.println("📝 High score file not found. Starting with empty list.");
+            System.out.println("High score file not found. Starting with empty list.");
             return;
         }
         
@@ -51,10 +51,10 @@ public class HighScoreManager {
             // Sắp xếp theo điểm giảm dần
             Collections.sort(highScores);
             
-            System.out.println("✅ Loaded " + highScores.size() + " high scores from file.");
+            System.out.println("Loaded " + highScores.size() + " high scores from file.");
             
         } catch (IOException e) {
-            System.err.println("❌ Error loading high scores: " + e.getMessage());
+            System.err.println("Error loading high scores: " + e.getMessage());
             // Lỗi đọc file → bắt đầu với danh sách rỗng
             highScores.clear();
         }

@@ -1,6 +1,7 @@
 package com.arkanoid.game.ui;
 
 import com.arkanoid.game.game.GamePanel;
+import com.arkanoid.game.util.FontManager;
 
 import java.awt.*;
 import javax.swing.*;
@@ -11,14 +12,14 @@ import javax.swing.*;
 public class Menu extends JFrame {
     public Menu() {
         setTitle("ARKANOID");
-        setSize(500, 450);
+        setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
         getContentPane().setBackground(new Color(20, 20, 40));
 
-        Font btnFont = new Font("Arial", Font.BOLD, 24);
-        Font titleFont = new Font("Arial", Font.BOLD, 52);
+        Font btnFont = FontManager.getFont(Font.BOLD, 24);
+        Font titleFont = FontManager.getFont(Font.BOLD, 52);
         
         // Tiêu đề
         JLabel title = new JLabel("ARKANOID");
