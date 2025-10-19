@@ -1,5 +1,3 @@
-com\arkanoid\game\game\Main.class
-com\arkanoid\game\entity\Item.class
 com\arkanoid\game\util\HighScoreManager.class
 com\arkanoid\game\game\GamePanel$1.class
 com\arkanoid\game\entity\Brick.class
@@ -11,7 +9,6 @@ com\arkanoid\game\ui\HighScorePanel.class
 com\arkanoid\game\entity\Paddle.class
 com\arkanoid\game\game\Level.class
 com\arkanoid\game\game\ArkanoidGame.class
-com\arkanoid\game\game\ControlWindow.class
 com\arkanoid\game\ui\Menu$1.class
 com\arkanoid\game\entity\Laser.class
 com\arkanoid\game\ui\HighScoreDialog.class
