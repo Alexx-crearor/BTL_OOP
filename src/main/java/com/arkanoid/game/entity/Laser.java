@@ -4,23 +4,26 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
-public class Laser extends Item {
+/**
+ * Laser class - kế thừa từ GameObject
+ */
+public class Laser extends GameObject {
     private boolean active = true;
     
     public Laser(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.width = 4;
-        this.height = 15;
+        super(x, y, 4, 15);
         this.dy = -8;
     }
     
+    @Override
     public void update() {
-        if (active) y += dy;
+        if (active) {
+            y += dy;
+        }
     }
     
+    @Override
     public void draw(Graphics g) {
         if (!active) return;
         Graphics2D g2d = (Graphics2D) g;
@@ -30,9 +33,16 @@ public class Laser extends Item {
         g2d.drawRect(x, y, width, height);
     }
     
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
-    public Rectangle getBounds() { return new Rectangle(x, y, width, height); }
-    public boolean isOffScreen() { return y + height < 0; }
+    public boolean isActive() { 
+        return active; 
+    }
+    
+    public void setActive(boolean active) { 
+        this.active = active; 
+    }
+    
+    public boolean isOffScreen() { 
+        return y + height < 0; 
+    }
 }
 

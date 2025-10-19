@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-public class PowerUp extends Item {
+/**
+ * PowerUp class - kế thừa từ GameObject
+ * Áp dụng kế thừa: PowerUp kế thừa từ GameObject
+ */
+public class PowerUp extends GameObject {
     public static final int POWERUP_WIDTH = 40;
     public static final int POWERUP_HEIGHT = 20;
     
@@ -34,15 +37,12 @@ public class PowerUp extends Item {
         }
     }
     
-    private PowerUpType type;
+    private final PowerUpType type;
     private BufferedImage image;
     private boolean active = true;
     
     public PowerUp(int x, int y, PowerUpType type) {
-        this.x = x;
-        this.y = y;
-        this.width = POWERUP_WIDTH;
-        this.height = POWERUP_HEIGHT;
+        super(x, y, POWERUP_WIDTH, POWERUP_HEIGHT);
         this.type = type;
         this.dy = 2; // Tốc độ rơi
         
@@ -63,12 +63,14 @@ public class PowerUp extends Item {
         }
     }
     
+    @Override
     public void update() {
         if (active) {
             y += dy;
         }
     }
     
+    @Override
     public void draw(Graphics g) {
         if (!active) return;
         
@@ -115,10 +117,6 @@ public class PowerUp extends Item {
     
     public void setActive(boolean active) {
         this.active = active;
-    }
-    
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
     }
     
     public boolean isOffScreen(int screenHeight) {

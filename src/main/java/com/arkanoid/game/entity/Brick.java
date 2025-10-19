@@ -4,13 +4,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-public class Brick extends Item {
+/**
+ * Brick class - kế thừa từ GameObject
+ * Áp dụng kế thừa: Brick kế thừa tất cả từ GameObject
+ */
+public class Brick extends GameObject {
     public static final int BRICK_WIDTH = 48;
     public static final int BRICK_HEIGHT = 20;
     
@@ -46,15 +49,17 @@ public class Brick extends Item {
     private boolean hasDroppedPowerUp = false;
     
     public Brick(int x, int y, BrickType type) {
-        this.x = x;
-        this.y = y;
-        this.width = BRICK_WIDTH;
-        this.height = BRICK_HEIGHT;
+        super(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         this.type = type;
         this.currentHits = type.hits;
         
         // Load hình ảnh nếu chưa có trong cache
         loadImageIfNeeded(type);
+    }
+    
+    @Override
+    public void update() {
+        // Brick không cần update mỗi frame
     }
     
     private static void loadImageIfNeeded(BrickType type) {
@@ -89,6 +94,7 @@ public class Brick extends Item {
         return false;
     }
     
+    @Override
     public void draw(Graphics g) {
         if (isDestroyed) return;
         
@@ -159,7 +165,9 @@ public class Brick extends Item {
         hasDroppedPowerUp = true;
     }
     
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+    public int getScoreValue() {
+        int[] scores = {10, 20, 30, 40, 50, 60, 100, 150, 50};
+        int idx = type.ordinal();
+        return idx < scores.length ? scores[idx] : 50;
     }
 }

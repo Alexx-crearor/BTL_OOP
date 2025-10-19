@@ -4,16 +4,19 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-public class Paddle extends Item {
-    private int normalWidth = 120;
-    private int enlargedWidth = 180;
-    private int reducedWidth = 80;
+/**
+ * Paddle class - kế thừa từ GameObject
+ * Áp dụng kế thừa: Paddle kế thừa tất cả thuộc tính và phương thức từ GameObject
+ */
+public class Paddle extends GameObject {
+    private final int normalWidth = 120;
+    private final int enlargedWidth = 180;
+    private final int reducedWidth = 80;
     private boolean enlarged = false;
     private boolean reduced = false;
     private int enlargeTimer = 0;
@@ -24,12 +27,8 @@ public class Paddle extends Item {
     private BufferedImage enlargedImage;
     
     public Paddle(int x, int y, int screenWidth, int screenHeight) {
-        this.x = x;
-        this.y = y;
-        this.width = normalWidth;
-        this.height = 20;
+        super(x, y, 120, 20);
         this.dx = 5;
-        
         loadImages();
     }
     
@@ -52,10 +51,15 @@ public class Paddle extends Item {
         }
     }
     
-    public void update(int screenWidth) {
+    @Override
+    public void update() {
         updateTimer(() -> { enlarged = false; width = normalWidth; }, enlargeTimer--);
         updateTimer(() -> { reduced = false; width = normalWidth; }, reduceTimer--);
         updateTimer(() -> hasLaser = false, laserTimer--);
+    }
+    
+    public void update(int screenWidth) {
+        update();
     }
     
     private void updateTimer(Runnable action, int timer) {
@@ -70,6 +74,7 @@ public class Paddle extends Item {
         x = Math.min(screenWidth - width, x + dx);
     }
     
+    @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -137,10 +142,6 @@ public class Paddle extends Item {
     
     public boolean hasLaser() {
         return hasLaser;
-    }
-    
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
     }
     
     public int getCenterX() {

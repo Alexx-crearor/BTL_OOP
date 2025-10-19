@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
-public class Ball extends Item {
+/**
+ * Ball class - kế thừa từ GameObject
+ * Áp dụng kế thừa: Ball kế thừa các thuộc tính và phương thức từ GameObject
+ */
+public class Ball extends GameObject {
     private int baseSpeed = 2; // Giảm từ 3 xuống 2 để chậm hơn
     private boolean megaBall = false;
     private boolean incandescent = false; // Xuyên thủng gạch
@@ -16,14 +19,12 @@ public class Ball extends Item {
     private boolean isMoving = false; // Bóng chỉ di chuyển khi paddle di chuyển
     
     public Ball(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
-        this.width = size;
-        this.height = size;
-        this.dx = 0; // Bắt đầu không di chuyển
+        super(x, y, size, size);
+        this.dx = 0;
         this.dy = 0;
     }
     
+    @Override
     public void update() {
         if (isMoving) {
             x += dx;
@@ -31,8 +32,20 @@ public class Ball extends Item {
         }
         
         // Cập nhật timers
-        if (megaBallTimer > 0 && --megaBallTimer == 0) { megaBall = false; width = height = 20; }
-        if (incandescentTimer > 0 && --incandescentTimer == 0) incandescent = false;
+        if (megaBallTimer > 0 && --megaBallTimer == 0) { 
+            megaBall = false; 
+            width = height = 20; 
+        }
+        if (incandescentTimer > 0 && --incandescentTimer == 0) {
+            incandescent = false;
+        }
+    }
+    
+    public void setSpeed(int speed) {
+        baseSpeed = speed;
+        // Giữ hướng hiện tại nhưng thay đổi tốc độ
+        dx = dx > 0 ? speed : (dx < 0 ? -speed : dx);
+        dy = dy > 0 ? speed : (dy < 0 ? -speed : dy);
     }
     
     public void startMoving() {
@@ -90,13 +103,6 @@ public class Ball extends Item {
         dy = -dy;
     }
     
-    public void setSpeed(int speed) {
-        baseSpeed = speed;
-        // Giữ hướng hiện tại nhưng thay đổi tốc độ
-        dx = dx > 0 ? speed : -speed;
-        dy = dy > 0 ? speed : -speed;
-    }
-    
     public void activateMegaBall(int duration) {
         megaBall = true;
         megaBallTimer = duration;
@@ -115,19 +121,5 @@ public class Ball extends Item {
     
     public boolean isIncandescent() {
         return incandescent;
-    }
-    
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
-    }
-    
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public void setVelocity(int dx, int dy) {
-        this.dx = dx;
-        this.dy = dy;
     }
 }
