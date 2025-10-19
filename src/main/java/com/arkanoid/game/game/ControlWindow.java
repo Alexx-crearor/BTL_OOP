@@ -12,8 +12,11 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.arkanoid.game.entity.Item;
+import com.arkanoid.game.ui.HighScoreDialog;
+import com.arkanoid.game.util.HighScoreManager;
 
 public class ControlWindow extends JPanel implements Runnable, KeyListener {
     // Trạng thái phím
@@ -33,6 +36,10 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
     public boolean gameWon = false;
     public int score = 0;
     private boolean ballStarted = false;
+    private boolean highScoreSubmitted = false;
+    
+    // High score manager
+    private HighScoreManager highScoreManager;
     
     // Hình ảnh
     private HashMap<String, Image> images = new HashMap<>();
@@ -268,7 +275,10 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
             ball.y = 0;
             ball.dy *= -1;
         }
-        if (ball.y + ball.height >= HEIGHT) gameOver = true;
+        if (ball.y + ball.height >= HEIGHT) {
+            gameOver = true;
+            checkAndSubmitHighScore();
+        }
         
         // Va chạm paddle
         Rectangle ballRect = new Rectangle(ball.x, ball.y, ball.width, ball.height);
@@ -315,4 +325,33 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
             }
         }
     }
+    
+    /**
+     * Kiểm tra và submit high score nếu đủ điểm
+     */
+    private void checkAndSubmitHighScore() {
+        if (highScoreSubmitted) {
+            return;
+        }
+        
+        if (highScoreManager.isHighScore(score)) {
+            highScoreSubmitted = true;
+            
+            SwingUtilities.invokeLater(() -> {
+                int rank = highScoreManager.getRank(score);
+                HighScoreDialog dialog = new HighScoreDialog(
+                    (javax.swing.JFrame) SwingUtilities.getWindowAncestor(this),
+                    score,
+                    rank
+                );
+                
+                String playerName = dialog.getPlayerName();
+                if (playerName != null && !playerName.trim().isEmpty()) {
+                    highScoreManager.addHighScore(playerName, score);
+                    System.out.println("✅ High score saved: " + playerName + " - " + score);
+                }
+            });
+        }
+    }
 }
+
