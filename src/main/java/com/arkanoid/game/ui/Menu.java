@@ -1,11 +1,13 @@
 package com.arkanoid.game.ui;
 
 import com.arkanoid.game.game.GamePanel;
-import com.arkanoid.game.game.Main;
 
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * Menu chính - Chỉ có 1 game mode: Chơi theo level
+ */
 public class Menu extends JFrame {
     public Menu() {
         setTitle("ARKANOID");
