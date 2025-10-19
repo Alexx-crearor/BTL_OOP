@@ -14,6 +14,9 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+echo [SUCCESS] Build completed!
+timeout /t 1 /nobreak >nul
+
 echo [2/2] Starting game...
 echo.
 java -jar target\arkanoid-game-1.0-SNAPSHOT.jar
