@@ -16,12 +16,15 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.arkanoid.game.entity.Ball;
 import com.arkanoid.game.entity.Brick;
 import com.arkanoid.game.entity.Laser;
 import com.arkanoid.game.entity.Paddle;
 import com.arkanoid.game.entity.PowerUp;
+import com.arkanoid.game.ui.HighScoreDialog;
+import com.arkanoid.game.util.HighScoreManager;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
     // Hằng số
@@ -49,6 +52,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private boolean paused = false;
     private boolean ballCaught = false;
     private Ball caughtBall = null;
+    private boolean highScoreSubmitted = false; // Đánh dấu đã submit high score
+    
+    // High score manager
+    private HighScoreManager highScoreManager;
     
     // Controls
     private boolean movingLeft = false;
@@ -65,6 +72,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         setFocusable(true);
         addKeyListener(this);
         
+        highScoreManager = new HighScoreManager();
         loadBackground();
         initGame();
     }
@@ -191,6 +199,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             lives--;
             if (lives <= 0) {
                 gameOver = true;
+                checkAndSubmitHighScore();
             } else {
                 resetBall();
             }
@@ -498,9 +507,40 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         score = 0;
         lives = 3;
         levelNumber = 1;
+        highScoreSubmitted = false;
         balls.clear();
         powerUps.clear();
         lasers.clear();
         initGame();
     }
+    
+    /**
+     * Kiểm tra và submit high score nếu đủ điểm
+     */
+    private void checkAndSubmitHighScore() {
+        if (highScoreSubmitted) {
+            return; // Đã submit rồi
+        }
+        
+        if (highScoreManager.isHighScore(score)) {
+            highScoreSubmitted = true;
+            
+            // Chạy dialog trên EDT thread
+            SwingUtilities.invokeLater(() -> {
+                int rank = highScoreManager.getRank(score);
+                HighScoreDialog dialog = new HighScoreDialog(
+                    (javax.swing.JFrame) SwingUtilities.getWindowAncestor(this),
+                    score,
+                    rank
+                );
+                
+                String playerName = dialog.getPlayerName();
+                if (playerName != null && !playerName.trim().isEmpty()) {
+                    highScoreManager.addHighScore(playerName, score);
+                    System.out.println("✅ High score saved: " + playerName + " - " + score);
+                }
+            });
+        }
+    }
 }
+
