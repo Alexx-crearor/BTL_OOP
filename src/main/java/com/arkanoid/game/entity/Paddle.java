@@ -40,6 +40,9 @@ public class Paddle extends GameObject {
             
             if (normalURL != null) {
                 normalImage = ImageIO.read(normalURL);
+                System.out.println("Paddle normal image loaded: VausII.png");
+            } else {
+                System.out.println("Paddle normal image not found: /Image/VausII.png");
             }
             if (enlargedURL != null) {
                 enlargedImage = ImageIO.read(enlargedURL);
