@@ -71,28 +71,52 @@ public class Ball extends GameObject {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        if (megaBall) {
-            // Vẽ bóng khổng lồ với hiệu ứng
-            GradientPaint gp = new GradientPaint(x, y, new Color(255, 100, 100), 
-                                                 x + width, y + height, new Color(255, 50, 50));
-            g2d.setPaint(gp);
-        } else if (incandescent) {
-            // Vẽ bóng xuyên thủng với hiệu ứng sáng
-            GradientPaint gp = new GradientPaint(x, y, new Color(255, 255, 100), 
-                                                 x + width, y + height, new Color(255, 215, 0));
-            g2d.setPaint(gp);
+        if (ballSprite != null) {
+            // Vẽ bằng sprite image
+            if (megaBall) {
+                // Bóng khổng lồ - vẽ lớn hơn với hiệu ứng đỏ
+                g2d.setColor(new Color(255, 100, 100, 100));
+                g2d.fillOval(x - 5, y - 5, width + 10, height + 10); // Aura đỏ
+                g2d.drawImage(ballSprite, x, y, width, height, null);
+            } else if (incandescent) {
+                // Bóng xuyên thấu - màu CAM với aura cam sáng
+                g2d.setColor(new Color(255, 140, 0, 120)); // Aura cam
+                g2d.fillOval(x - 4, y - 4, width + 8, height + 8);
+                // Vẽ bóng với màu cam overlay
+                g2d.setColor(new Color(255, 140, 0)); // Màu cam đậm
+                g2d.fillOval(x, y, width, height);
+                // Thêm highlight
+                g2d.setColor(new Color(255, 200, 100, 200));
+                g2d.fillOval(x + width/4, y + height/4, width/2, height/2);
+            } else {
+                // Bóng thường
+                g2d.drawImage(ballSprite, x, y, width, height, null);
+            }
         } else {
-            // Bóng thường
-            GradientPaint gp = new GradientPaint(x, y, Color.WHITE, 
-                                                 x + width, y + height, Color.RED);
-            g2d.setPaint(gp);
+            // Fallback: vẽ bằng gradient nếu không load được sprite
+            if (megaBall) {
+                // Vẽ bóng khổng lồ với hiệu ứng
+                GradientPaint gp = new GradientPaint(x, y, new Color(255, 100, 100), 
+                                                     x + width, y + height, new Color(255, 50, 50));
+                g2d.setPaint(gp);
+            } else if (incandescent) {
+                // Vẽ bóng xuyên thấu với màu cam
+                GradientPaint gp = new GradientPaint(x, y, new Color(255, 180, 0), 
+                                                     x + width, y + height, new Color(255, 100, 0));
+                g2d.setPaint(gp);
+            } else {
+                // Bóng thường
+                GradientPaint gp = new GradientPaint(x, y, Color.WHITE, 
+                                                     x + width, y + height, Color.RED);
+                g2d.setPaint(gp);
+            }
+            
+            g2d.fillOval(x, y, width, height);
+            
+            // Highlight
+            g2d.setColor(new Color(255, 255, 255, 150));
+            g2d.fillOval(x + width/4, y + height/4, width/3, height/3);
         }
-        
-        g2d.fillOval(x, y, width, height);
-        
-        // Highlight
-        g2d.setColor(new Color(255, 255, 255, 150));
-        g2d.fillOval(x + width/4, y + height/4, width/3, height/3);
     }
     
     public void reverseX() {
