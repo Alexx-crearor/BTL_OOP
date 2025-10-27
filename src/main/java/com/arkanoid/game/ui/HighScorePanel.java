@@ -97,6 +97,35 @@ public class HighScorePanel extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Thêm hỗ trợ keyboard: ESC và ENTER để đóng
+     */
+    private void addKeyboardSupport() {
+        // Set focusable cho JFrame
+        setFocusable(true);
+        
+        // Thêm KeyListener
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case java.awt.event.KeyEvent.VK_ESCAPE:
+                    case java.awt.event.KeyEvent.VK_ENTER:
+                        dispose();
+                        break;
+                }
+            }
+        });
+        
+        // Request focus khi window mở
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                requestFocusInWindow();
+            }
+        });
+    }
+    
     private JPanel createTableHeader() {
         JPanel header = new JPanel();
         header.setLayout(new GridLayout(1, 4, 10, 0));
