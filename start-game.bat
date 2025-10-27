@@ -1,25 +1,32 @@
 @echo off
+cd /d "%~dp0"
 echo ========================================
 echo    ARKANOID GAME - Java Edition
 echo ========================================
 echo.
 
-echo [1/2] Building project...
-call mvn clean package -DskipTests -q
-
-if %errorlevel% neq 0 (
-    echo.
-    echo [ERROR] Build failed!
-    pause
-    exit /b 1
+REM Check if JAR file exists
+if not exist "target\arkanoid-game-1.0-SNAPSHOT.jar" (
+    echo [INFO] JAR file not found. Building project...
+    call mvn clean package -DskipTests -q
+    
+    if %errorlevel% neq 0 (
+        echo.
+        echo [ERROR] Build failed!
+        pause
+        exit /b 1
+    )
+    echo [SUCCESS] Build completed!
+) else (
+    echo [INFO] Using existing JAR file (skip build for faster startup)
 )
 
-echo [SUCCESS] Build completed!
 timeout /t 1 /nobreak >nul
 
-echo [2/2] Starting game...
+echo [STARTING GAME] Please wait...
 echo.
-java -jar target\arkanoid-game-1.0-SNAPSHOT.jar
+REM Run with optimized JVM flags for better performance
+java -Xms256m -Xmx512m -XX:+UseG1GC -jar target\arkanoid-game-1.0-SNAPSHOT.jar
 
 if %errorlevel% neq 0 (
     echo.

@@ -5,6 +5,9 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
 
 /**
  * Ball class - kế thừa từ GameObject
@@ -17,6 +20,23 @@ public class Ball extends GameObject {
     private int megaBallTimer = 0;
     private int incandescentTimer = 0;
     private boolean isMoving = false; // Bóng chỉ di chuyển khi paddle di chuyển
+    
+    // Sprite image cho bóng
+    private static BufferedImage ballSprite = null;
+    
+    static {
+        try {
+            java.net.URL imgURL = Ball.class.getResource("/Image/sprite-ball.png");
+            if (imgURL != null) {
+                ballSprite = ImageIO.read(imgURL);
+                System.out.println("Ball sprite loaded successfully!");
+            } else {
+                System.out.println("Ball sprite not found: /Image/sprite-ball.png");
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading ball sprite: " + e.getMessage());
+        }
+    }
     
     public Ball(int x, int y, int size) {
         super(x, y, size, size);

@@ -30,7 +30,7 @@ public class Brick extends GameObject {
         LIGHT_BLUE(2, new Color(135, 206, 250), "/Image/LightBlueWall.png"),
         GOLD(3, new Color(255, 215, 0), "/Image/GoldWall.png"),
         SILVER(4, new Color(192, 192, 192), "/Image/SilverWall.png"),
-        REGENERATING(999, new Color(138, 43, 226), "/Image/RegeneratingWall.png");
+        REGENERATING(999, new Color(255, 0, 255), "/Image/RegeneratingWall.png"); // Màu hồng neon - dễ nhận biết!
         
         public final int hits;
         public final Color color;
@@ -64,7 +64,13 @@ public class Brick extends GameObject {
     
     @Override
     public void update() {
-        // Brick không cần update mỗi frame
+        // Kiểm tra gạch tái sinh có cần xuất hiện lại không
+        if (type == BrickType.REGENERATING && isTemporarilyHidden) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - hiddenStartTime >= REGENERATION_TIME) {
+                isTemporarilyHidden = false; // Xuất hiện lại
+            }
+        }
     }
     
     private static void loadImageIfNeeded(BrickType type) {
@@ -75,12 +81,15 @@ public class Brick extends GameObject {
                 if (imgURL != null) {
                     BufferedImage img = ImageIO.read(imgURL);
                     imageCache.put(type, img);
+                    System.out.println("Loaded brick image: " + type.name() + " from " + type.imagePath);
                 } else {
                     // Không tìm thấy resource, dùng màu thay thế
+                    System.out.println("Image not found for " + type.name() + ": " + type.imagePath);
                     imageCache.put(type, null);
                 }
             } catch (Exception e) {
                 // Không load được, sẽ dùng màu thay thế
+                System.out.println("Error loading image for " + type.name() + ": " + e.getMessage());
                 imageCache.put(type, null);
             }
         }
@@ -88,7 +97,12 @@ public class Brick extends GameObject {
     
     public boolean hit() {
         if (type == BrickType.REGENERATING) {
-            return false; // Gạch không thể phá hủy
+            // Gạch tái sinh: ẩn tạm thời 10 giây
+            if (!isTemporarilyHidden) {
+                isTemporarilyHidden = true;
+                hiddenStartTime = System.currentTimeMillis();
+            }
+            return false; // Không bị phá hủy
         }
         
         currentHits--;
@@ -102,6 +116,11 @@ public class Brick extends GameObject {
     @Override
     public void draw(Graphics g) {
         if (isDestroyed) return;
+        
+        // Nếu gạch tái sinh đang ẩn, không vẽ
+        if (type == BrickType.REGENERATING && isTemporarilyHidden) {
+            return;
+        }
         
         BufferedImage image = imageCache.get(type);
         
@@ -160,6 +179,13 @@ public class Brick extends GameObject {
     
     public BrickType getType() {
         return type;
+    }
+    
+    /**
+     * Kiểm tra gạch có đang ẩn tạm thời không (cho gạch tái sinh)
+     */
+    public boolean isTemporarilyHidden() {
+        return isTemporarilyHidden;
     }
     
     public boolean canDropPowerUp() {

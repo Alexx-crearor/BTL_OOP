@@ -127,11 +127,11 @@ public class Level {
     }
     
     private void generateLevel4() {
-        // Level 4: Pattern cờ vua
+        // Level 4: Pattern khó với nhiều gạch cứng và tái sinh
         int startX = 150;
-        int startY = 50;
+        int startY = 30;
         
-        for (int row = 0; row < 8; row++) {
+        for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
                 int x = startX + col * Brick.BRICK_WIDTH;
                 int y = startY + row * Brick.BRICK_HEIGHT;
@@ -169,20 +169,45 @@ public class Level {
     }
     
     private void generateLevel5() {
-        // Level 5: Pattern phức tạp với tất cả loại gạch
-        int startX = 150;
-        int startY = 30;
+        // Level 5: Cực khó với nhiều gạch cứng, tái sinh và pattern phức tạp
+        int startX = 135;
+        int startY = 20;
         
-        Brick.BrickType[] types = Brick.BrickType.values();
-        
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 10; col++) {
+        for (int row = 0; row < 11; row++) {
+            for (int col = 0; col < 11; col++) {
                 int x = startX + col * Brick.BRICK_WIDTH;
                 int y = startY + row * Brick.BRICK_HEIGHT;
                 
-                // Tạo pattern spiral
-                int index = (row * 10 + col) % types.length;
-                bricks.add(new Brick(x, y, types[index]));
+                Brick.BrickType type;
+                
+                // Tạo pattern "tường thành" - các lớp bảo vệ
+                // Layer 1: Viền ngoài - gạch tái sinh
+                if (row == 0 || row == 10 || col == 0 || col == 10) {
+                    type = Brick.BrickType.REGENERATING;
+                }
+                // Layer 2: Lớp vàng (hàng 1,9 và cột 1,9)
+                else if (row == 1 || row == 9 || col == 1 || col == 9) {
+                    type = Brick.BrickType.GOLD;
+                }
+                // Layer 3: Lớp bạc (hàng 2,8 và cột 2,8)
+                else if (row == 2 || row == 8 || col == 2 || col == 8) {
+                    type = Brick.BrickType.SILVER;
+                }
+                // Tâm: Pattern xoắn ốc với gạch cứng
+                else {
+                    int centerDist = Math.abs(row - 5) + Math.abs(col - 5);
+                    if (centerDist == 0) {
+                        type = Brick.BrickType.GOLD; // Trung tâm: vàng
+                    } else if (centerDist % 3 == 0) {
+                        type = Brick.BrickType.GOLD;
+                    } else if (centerDist % 3 == 1) {
+                        type = Brick.BrickType.SILVER;
+                    } else {
+                        type = ((row + col) % 2 == 0) ? Brick.BrickType.CYAN : Brick.BrickType.ORANGE;
+                    }
+                }
+                
+                bricks.add(new Brick(x, y, type));
             }
         }
     }

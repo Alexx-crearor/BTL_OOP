@@ -46,9 +46,13 @@ public class Paddle extends GameObject {
             }
             if (enlargedURL != null) {
                 enlargedImage = ImageIO.read(enlargedURL);
+                System.out.println("Paddle enlarged image loaded: VausIIwEnlarge.png");
+            } else {
+                System.out.println("Paddle enlarged image not found: /Image/VausIIwEnlarge.png");
             }
         } catch (Exception e) {
             // Sử dụng hình vẽ mặc định nếu không load được
+            System.out.println("Error loading paddle images: " + e.getMessage());
             normalImage = null;
             enlargedImage = null;
         }

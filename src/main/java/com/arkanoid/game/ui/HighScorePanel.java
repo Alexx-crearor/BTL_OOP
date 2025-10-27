@@ -26,6 +26,7 @@ import com.arkanoid.game.util.HighScoreManager;
  */
 public class HighScorePanel extends JFrame {
     private HighScoreManager highScoreManager;
+    private JButton closeButton;
     
     public HighScorePanel() {
         highScoreManager = new HighScoreManager();
@@ -81,16 +82,18 @@ public class HighScorePanel extends JFrame {
         // Button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(20, 20, 40));
+        buttonPanel.setFocusable(true);
         
-        JButton closeButton = new JButton("Back to Menu");
-        closeButton.setFont(FontManager.getFont(Font.BOLD, 20));
-        closeButton.setPreferredSize(new Dimension(250, 50));
-        closeButton.setBackground(new Color(70, 130, 180));
-        closeButton.setForeground(Color.WHITE);
-        closeButton.setFocusPainted(false);
+        closeButton = MenuButtonFactory.createStyledButton("BACK TO MENU", 
+            FontManager.getFont(Font.BOLD, 20),
+            new Color(70, 130, 180),
+            new Color(50, 100, 150));
         closeButton.addActionListener(e -> dispose());
         
         buttonPanel.add(closeButton);
+        
+        // Thêm keyboard support
+        addKeyboardSupport();
         
         add(headerPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
