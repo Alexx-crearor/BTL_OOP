@@ -15,8 +15,28 @@ public class Menu extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridBagLayout());
-        getContentPane().setBackground(new Color(20, 20, 40));
+        setFocusable(true);
+        setFocusableWindowState(true);
+        
+        // Khởi tạo helpers
+        audioManager = new MenuAudioManager();
+        
+        loadBackgroundImage();
+        audioManager.loadAndPlayMenuMusic();
+        
+        // Tạo panel chính với ảnh nền
+        mainPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        mainPanel.setOpaque(false);
+        mainPanel.setFocusable(true);
+        setContentPane(mainPanel);
 
         Font btnFont = FontManager.getFont(Font.BOLD, 24);
         Font titleFont = FontManager.getFont(Font.BOLD, 52);
