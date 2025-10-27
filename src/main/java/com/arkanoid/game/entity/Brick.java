@@ -48,6 +48,11 @@ public class Brick extends GameObject {
     public boolean isDestroyed = false;
     private boolean hasDroppedPowerUp = false;
     
+    // Cho gạch tái sinh
+    private boolean isTemporarilyHidden = false; // Gạch đang ẩn tạm thời
+    private long hiddenStartTime = 0; // Thời điểm bắt đầu ẩn
+    private static final long REGENERATION_TIME = 10000; // 10 giây (milliseconds)
+    
     public Brick(int x, int y, BrickType type) {
         super(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         this.type = type;
