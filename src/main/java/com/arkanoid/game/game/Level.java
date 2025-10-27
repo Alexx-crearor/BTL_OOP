@@ -133,14 +133,37 @@ public class Level {
         
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
-                if ((row + col) % 2 == 0) {
-                    int x = startX + col * Brick.BRICK_WIDTH;
-                    int y = startY + row * Brick.BRICK_HEIGHT;
-                    
-                    Brick.BrickType type = (row % 2 == 0) ? 
-                        Brick.BrickType.CYAN : Brick.BrickType.ORANGE;
-                    bricks.add(new Brick(x, y, type));
+                int x = startX + col * Brick.BRICK_WIDTH;
+                int y = startY + row * Brick.BRICK_HEIGHT;
+                
+                Brick.BrickType type;
+                
+                // Hàng đầu và cuối: gạch tái sinh
+                if (row == 0 || row == 9) {
+                    type = Brick.BrickType.REGENERATING;
                 }
+                // Hàng 1 và 8: gạch vàng (cứng nhất)
+                else if (row == 1 || row == 8) {
+                    type = Brick.BrickType.GOLD;
+                }
+                // Hàng 2 và 7: gạch bạc (cứng)
+                else if (row == 2 || row == 7) {
+                    type = Brick.BrickType.SILVER;
+                }
+                // Các cột biên: gạch vàng
+                else if (col == 0 || col == 9) {
+                    type = Brick.BrickType.GOLD;
+                }
+                // Pattern cờ vua ở giữa với gạch cứng
+                else if ((row + col) % 2 == 0) {
+                    type = (row % 3 == 0) ? Brick.BrickType.GOLD : Brick.BrickType.CYAN;
+                }
+                // Còn lại: gạch thường
+                else {
+                    type = Brick.BrickType.ORANGE;
+                }
+                
+                bricks.add(new Brick(x, y, type));
             }
         }
     }
