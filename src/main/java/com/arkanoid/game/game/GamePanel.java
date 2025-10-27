@@ -36,12 +36,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     // Background
     private BufferedImage backgroundImage;
     
-    // Game objects
-    private Paddle paddle;
-    private ArrayList<Ball> balls;
-    private ArrayList<Brick> bricks;
-    private ArrayList<PowerUp> powerUps;
-    private ArrayList<Laser> lasers;
+    // Managers & Helpers
+    private AudioManager audioManager;
+    private GameRenderer renderer;
+    private GameUpdater updater;
+    private InputHandler inputHandler;
+    private GameStateHandler stateHandler;
     
     // Game state
     private Level currentLevel;
