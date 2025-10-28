@@ -86,7 +86,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         // Khởi tạo managers
         audioManager = new AudioManager();
         highScoreManager = new HighScoreManager();
-        loadBackground();
+        loadBackground(levelNumber);
         
         // Khởi tạo helpers sau khi load background
         renderer = new GameRenderer(WIDTH, HEIGHT, backgroundImage);
@@ -109,8 +109,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         // Khởi tạo managers
         audioManager = new AudioManager();
         highScoreManager = new HighScoreManager();
-        loadBackground();
-        
+        loadBackground(levelNumber);
+
         // Khởi tạo helpers sau khi load background
         renderer = new GameRenderer(WIDTH, HEIGHT, backgroundImage);
         updater = new GameUpdater(this);
@@ -121,17 +121,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
     
     /**
-     * Load background image từ resources
+     * Load background image của mỗi level từ resources
      */
-    private void loadBackground() {
+    private void loadBackground(int levelNumber) {
         try {
             // Load từ classpath resources
-            java.net.URL imgURL = getClass().getResource("/Image/backgroundLevel1.png");
+            String imgPath = "/Image/backgroundLevel" + levelNumber + ".png";
+            java.net.URL imgURL = getClass().getResource(imgPath);
             if (imgURL != null) {
                 backgroundImage = ImageIO.read(imgURL);
                 System.out.println("Background loaded successfully!");
             } else {
-                System.out.println("Resource not found: /Image/backgroundLevel1.png");
+                System.out.println("Resource not found: " + imgPath);
             }
         } catch (Exception e) {
             System.out.println("Error loading background: " + e.getMessage());
@@ -159,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         loadLevel(levelNumber);
         
         // Load và phát nhạc nền
-        audioManager.loadAndPlayLevelMusic();
+        audioManager.loadAndPlayLevelMusic(levelNumber);
         
         // Start game thread
         gameThread = new Thread(this);
@@ -174,6 +175,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         currentLevel = new Level(level);
         bricks = currentLevel.getBricks();
         levelNumber = level;
+
+        // Load nhạc theo level
+        audioManager.loadAndPlayLevelMusic(levelNumber);
+
+        // Load background mới
+        loadBackground(levelNumber);
+
+        // Cập nhật background cho renderer
+        renderer.setBackgroundImage(backgroundImage);
     }
     
     /**
@@ -279,7 +289,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         stateHandler.loadGameFromState(state);
         
         // Load và phát nhạc nền
-        audioManager.loadAndPlayLevelMusic();
+        audioManager.loadAndPlayLevelMusic(levelNumber);
         
         // Start game thread
         gameThread = new Thread(this);
