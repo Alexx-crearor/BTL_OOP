@@ -159,6 +159,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         // Khởi tạo collections
         powerUps = new ArrayList<>();
         lasers = new ArrayList<>();
+        projectiles = new ArrayList<>();
+        shieldBricks = new ArrayList<>();
         
         // Load level
         loadLevel(levelNumber);
@@ -176,9 +178,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
      * @param level Số level (1-5)
      */
     public void loadLevel(int level) {
-        currentLevel = new Level(level);
-        bricks = currentLevel.getBricks();
-        levelNumber = level;
+        // Bước 1: Luôn tải level mới và cập nhật các thông tin cơ bản.
+        this.currentLevel = new Level(level);
+        this.levelNumber = level;
+        this.bricks = currentLevel.getBricks(); // Lấy danh sách gạch của level mới.
+
+        // Bước 2: Dọn dẹp trạng thái của màn trùm cũ (nếu có).
+        this.boss = null; // QUAN TRỌNG: Xóa trùm cũ để đảm bảo không có lỗi.
+        if (this.shieldBricks != null) this.shieldBricks.clear();
+        if (this.projectiles != null) this.projectiles.clear();
+
+        // Bước 3: Dựa trên level MỚI, quyết định có tạo trùm hay không.
+        // Nếu là màn 5 VÀ level mới không có gạch, thì tạo trùm.
+        if (this.levelNumber == 5 && this.bricks.isEmpty()) {
+            System.out.println("Màn 5 không có gạch -> Đã đến lúc tạo trùm!");
+            this.boss = new Boss(WIDTH, HEIGHT);
+        }
     }
     
     /**
