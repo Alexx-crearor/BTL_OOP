@@ -159,7 +159,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         loadLevel(levelNumber);
         
         // Load và phát nhạc nền
-        audioManager.loadAndPlayLevelMusic();
+        audioManager.loadAndPlayLevelMusic(levelNumber);
         
         // Start game thread
         gameThread = new Thread(this);
@@ -279,7 +279,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         stateHandler.loadGameFromState(state);
         
         // Load và phát nhạc nền
-        audioManager.loadAndPlayLevelMusic();
+        audioManager.loadAndPlayLevelMusic(levelNumber);
         
         // Start game thread
         gameThread = new Thread(this);
