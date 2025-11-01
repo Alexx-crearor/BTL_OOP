@@ -19,12 +19,13 @@ public class AudioManager {
      * Load và phát nhạc nền cho level
      * Nhạc sẽ loop liên tục với âm lượng từ Menu.globalVolume
      */
-    public void loadAndPlayLevelMusic() {
+    public void loadAndPlayLevelMusic(int levelNumber) {
         try {
             stopLevelMusic(); // Dừng nhạc cũ nếu có
             
             // Load file WAV từ resources
-            java.net.URL musicURL = getClass().getResource("/Sound/level1Music.wav");
+            String path = "/Sound/level" + levelNumber + "Music.wav";
+            java.net.URL musicURL = getClass().getResource(path);
             if (musicURL != null) {
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(musicURL);
                 levelMusicClip = AudioSystem.getClip();
