@@ -11,11 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import com.arkanoid.game.entity.Ball;
-import com.arkanoid.game.entity.Brick;
-import com.arkanoid.game.entity.Laser;
-import com.arkanoid.game.entity.Paddle;
-import com.arkanoid.game.entity.PowerUp;
+import com.arkanoid.game.entity.*;
 import com.arkanoid.game.util.GameStateManager.GameState;
 import com.arkanoid.game.util.HighScoreManager;
 
@@ -76,6 +72,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     
     // Thread
     private Thread gameThread;
+
+    /** Đối tượng trùm cuối của game. Sẽ được tạo ở màn 5. */
+    Boss boss;
+
+    /** Danh sách các viên đạn mà trùm bắn ra. */
+    ArrayList<Projectile> projectiles;
+
+    /** Danh sách riêng cho các viên gạch khiên của trùm. */
+    ArrayList<Brick> shieldBricks;
     
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -307,6 +312,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
      */
     public AudioManager getAudioManager() {
         return audioManager;
+    }
+
+    /**
+     * Cung cấp quyền truy cập công khai vào đối tượng trùm.
+     * @return Đối tượng Boss hoặc null nếu chưa được tạo.
+     */
+    public Boss getBoss() {
+        return this.boss;
+    }
+
+    /**
+     * Cung cấp quyền truy cập công khai vào danh sách đạn của trùm.
+     * @return ArrayList chứa các Projectile.
+     */
+    public ArrayList<Projectile> getProjectiles() {
+        return this.projectiles;
+    }
+
+    /**
+     * Cung cấp quyền truy cập công khai vào danh sách khiên của trùm.
+     * @return ArrayList chứa các Brick khiên.
+     */
+    public ArrayList<Brick> getShieldBricks() {
+        return this.shieldBricks;
     }
 }
 
