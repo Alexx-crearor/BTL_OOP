@@ -11,11 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import com.arkanoid.game.entity.Ball;
-import com.arkanoid.game.entity.Brick;
-import com.arkanoid.game.entity.Laser;
-import com.arkanoid.game.entity.Paddle;
-import com.arkanoid.game.entity.PowerUp;
+import com.arkanoid.game.entity.*;
 import com.arkanoid.game.util.GameStateManager.GameState;
 import com.arkanoid.game.util.HighScoreManager;
 
@@ -50,6 +46,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     ArrayList<Brick> bricks;
     ArrayList<PowerUp> powerUps;
     ArrayList<Laser> lasers;
+
+    Boss boss;
+    ArrayList<Projectile> projectiles;
+    ArrayList<Brick> shieldBricks;
+
     
     // Game state - package-private
     Level currentLevel;
@@ -154,6 +155,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         // Khởi tạo collections
         powerUps = new ArrayList<>();
         lasers = new ArrayList<>();
+        projectiles = new ArrayList<>();
+        shieldBricks = new ArrayList<>();
         
         // Load level
         loadLevel(levelNumber);
@@ -174,6 +177,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         currentLevel = new Level(level);
         bricks = currentLevel.getBricks();
         levelNumber = level;
+
+        //Màn 5 nếu không có ghạch thì tạo trùm
+        if (level == 5 && bricks.isEmpty()) {
+            System.out.println("Màn 5 không có ghạch -> đã đến lúc tạo trùm");
+
+            this.shieldBricks.clear();
+            this.projectiles.clear();
+
+            this.boss = new Boss(WIDTH, HEIGHT);
+        }
     }
     
     /**
