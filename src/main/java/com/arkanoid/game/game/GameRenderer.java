@@ -8,10 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import com.arkanoid.game.entity.Ball;
-import com.arkanoid.game.entity.Brick;
-import com.arkanoid.game.entity.Laser;
-import com.arkanoid.game.entity.PowerUp;
+import com.arkanoid.game.entity.*;
 import com.arkanoid.game.util.FontManager;
 
 /**
@@ -66,7 +63,22 @@ public class GameRenderer {
         for (Brick brick : panel.bricks) {
             brick.draw(g2d);
         }
-        
+
+        //Vẽ trùm
+        if (panel.boss != null) {
+            // 1. Vẽ trùm
+            panel.boss.draw(g2d);
+
+            // 2. Vẽ các viên gạch khiên của trùm
+            for (Brick shieldBrick : panel.shieldBricks) {
+                shieldBrick.draw(g2d);
+            }
+
+            // 3. Vẽ các viên đạn của trùm
+            for (Projectile projectile : panel.projectiles) {
+                projectile.draw(g2d);
+            }
+        }
         // Vẽ paddle
         panel.paddle.draw(g2d);
         
