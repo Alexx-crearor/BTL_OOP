@@ -149,7 +149,7 @@ public class GameRenderer {
         FontMetrics fm = g.getFontMetrics();
         String title = "PAUSED";
         int titleX = (width - fm.stringWidth(title)) / 2;
-        g.drawString(title, titleX, height / 2 - 80);
+        g.drawString(title, titleX, height / 2 - 120);
         
         // Các lựa chọn
         String[] options = {"RESUME", "QUIT TO MENU"};
@@ -157,28 +157,113 @@ public class GameRenderer {
         fm = g.getFontMetrics();
         
         for (int i = 0; i < options.length; i++) {
+            int yPos = height / 2 - 30 + i * 50;
+            
             if (i == panel.pauseMenuSelection) {
                 // Lựa chọn đang được chọn (màu vàng + mũi tên)
                 g.setColor(Color.YELLOW);
                 String arrow = "> ";
                 g.drawString(arrow + options[i], 
                     (width - fm.stringWidth(arrow + options[i])) / 2, 
-                    height / 2 + i * 50);
+                    yPos);
             } else {
                 // Lựa chọn không được chọn
                 g.setColor(Color.LIGHT_GRAY);
                 g.drawString(options[i], 
                     (width - fm.stringWidth(options[i])) / 2, 
-                    height / 2 + i * 50);
+                    yPos);
             }
         }
+        
+        // Vẽ thanh điều chỉnh âm lượng ở dưới cùng
+        drawVolumeSlider(g, height - 100);
         
         // Hướng dẫn
         g.setColor(Color.WHITE);
         g.setFont(FontManager.getFont(Font.PLAIN, 16));
         fm = g.getFontMetrics();
-        String hint = "Use UP/DOWN to select, ENTER to confirm, ESC to resume";
+        String hint = "Use UP/DOWN to select, LEFT/RIGHT to adjust volume, ENTER to confirm, ESC to resume";
         g.drawString(hint, (width - fm.stringWidth(hint)) / 2, height - 50);
+    }
+    
+    /**
+     * Vẽ thanh điều chỉnh âm lượng
+     */
+    private void drawVolumeSlider(Graphics g, int yPos) {
+        int sliderWidth = 300;
+        int sliderHeight = 20;
+        int trackHeight = 8;
+        int sliderX = (width - sliderWidth) / 2;
+        int trackY = yPos + (sliderHeight - trackHeight) / 2;
+        
+        // Label "VOLUME:"
+        g.setColor(Color.YELLOW);
+        g.setFont(FontManager.getFont(Font.BOLD, 20));
+        FontMetrics fm = g.getFontMetrics();
+        String label = "VOLUME:";
+        int labelX = sliderX - fm.stringWidth(label) - 15;
+        g.drawString(label, labelX, yPos + sliderHeight - 5);
+        
+        // Vẽ track (thanh nền) - bo tròn
+        g.setColor(new Color(60, 60, 60));
+        g.fillRoundRect(sliderX, trackY, sliderWidth, trackHeight, 5, 5);
+        
+        // Vẽ phần đã fill (theo volume) - bo tròn
+        g.setColor(new Color(255, 215, 0)); // Gold color
+        int fillWidth = (int)(sliderWidth * com.arkanoid.game.ui.Menu.globalVolume);
+        if (fillWidth > 0) {
+            g.fillRoundRect(sliderX, trackY, fillWidth, trackHeight, 5, 5);
+        }
+        
+        // Vẽ border
+        g.setColor(Color.WHITE);
+        g.drawRoundRect(sliderX, trackY, sliderWidth, trackHeight, 5, 5);
+        
+        // Vẽ các tick marks (vạch chia độ)
+        g.setColor(Color.LIGHT_GRAY);
+        int majorTickSpacing = sliderWidth / 4; // 4 vạch lớn (0%, 25%, 50%, 75%, 100%)
+        for (int i = 0; i <= 4; i++) {
+            int tickX = sliderX + i * majorTickSpacing;
+            int tickY1 = trackY + trackHeight;
+            int tickY2 = tickY1 + 8; // Vạch dài 8 pixels
+            g.drawLine(tickX, tickY1, tickX, tickY2);
+        }
+        
+        // Vẽ các tick marks nhỏ (minor ticks)
+        g.setColor(new Color(150, 150, 150));
+        int minorTickSpacing = sliderWidth / 20; // 20 vạch nhỏ
+        for (int i = 1; i < 20; i++) {
+            if (i % 5 != 0) { // Không vẽ lại vị trí major ticks
+                int tickX = sliderX + i * minorTickSpacing;
+                int tickY1 = trackY + trackHeight;
+                int tickY2 = tickY1 + 4; // Vạch ngắn hơn
+                g.drawLine(tickX, tickY1, tickX, tickY2);
+            }
+        }
+        
+        // Vẽ thumb (nút trượt)
+        int thumbWidth = 16;
+        int thumbHeight = 20;
+        int thumbX = sliderX + fillWidth - thumbWidth / 2;
+        int thumbY = yPos;
+        
+        // Shadow cho thumb
+        g.setColor(new Color(0, 0, 0, 100));
+        g.fillRoundRect(thumbX + 2, thumbY + 2, thumbWidth, thumbHeight, 8, 8);
+        
+        // Thumb chính
+        g.setColor(new Color(240, 240, 240));
+        g.fillRoundRect(thumbX, thumbY, thumbWidth, thumbHeight, 8, 8);
+        
+        // Border thumb
+        g.setColor(Color.WHITE);
+        g.drawRoundRect(thumbX, thumbY, thumbWidth, thumbHeight, 8, 8);
+        
+        // Vẽ giá trị phần trăm
+        g.setFont(FontManager.getFont(Font.BOLD, 20));
+        g.setColor(Color.WHITE);
+        String volumeText = (int)(com.arkanoid.game.ui.Menu.globalVolume * 100) + "%";
+        g.drawString(volumeText, sliderX + sliderWidth + 20, yPos + sliderHeight - 5);
     }
     
     /**
