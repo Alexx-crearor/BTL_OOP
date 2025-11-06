@@ -88,6 +88,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         setFocusable(true);
         addKeyListener(this);
         
+        // Thêm mouse listener để xử lý volume slider
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                handleVolumeSliderClick(e.getX(), e.getY());
+            }
+        });
+        
+        addMouseMotionListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                handleVolumeSliderClick(e.getX(), e.getY());
+            }
+        });
+        
         // Khởi tạo managers
         audioManager = new AudioManager();
         highScoreManager = new HighScoreManager();
@@ -290,6 +305,35 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
      */
     void quitToMenu() {
         stateHandler.quitToMenu(audioManager);
+    }
+    
+    /**
+     * Xử lý click chuột lên thanh volume slider trong pause menu
+     */
+    private void handleVolumeSliderClick(int mouseX, int mouseY) {
+        // Chỉ xử lý khi đang ở pause menu
+        if (!showPauseMenu) {
+            return;
+        }
+        
+        // Vị trí thanh slider (phải giống với drawVolumeSlider trong GameRenderer)
+        int sliderWidth = 300;
+        int sliderHeight = 20;
+        int sliderX = (WIDTH - sliderWidth) / 2;
+        int sliderY = HEIGHT - 100;
+        
+        // Kiểm tra xem chuột có click vào vùng slider không (mở rộng vùng click)
+        if (mouseX >= sliderX && mouseX <= sliderX + sliderWidth &&
+            mouseY >= sliderY - 5 && mouseY <= sliderY + sliderHeight + 15) {
+            
+            // Tính toán volume mới dựa vào vị trí click
+            float newVolume = (float)(mouseX - sliderX) / sliderWidth;
+            newVolume = Math.max(0.0f, Math.min(1.0f, newVolume)); // Giới hạn 0-1
+            
+            // Cập nhật volume
+            com.arkanoid.game.ui.Menu.globalVolume = newVolume;
+            audioManager.updateVolume();
+        }
     }
     
     /**
