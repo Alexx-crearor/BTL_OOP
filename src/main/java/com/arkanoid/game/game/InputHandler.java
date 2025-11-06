@@ -85,6 +85,12 @@ public class InputHandler extends GameComponent {
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
             // Toggle giữa Resume (0) và Quit (1)
             panel.pauseMenuSelection = 1 - panel.pauseMenuSelection;
+        } else if (key == KeyEvent.VK_LEFT) {
+            // Giảm âm lượng
+            adjustVolume(-0.05f);
+        } else if (key == KeyEvent.VK_RIGHT) {
+            // Tăng âm lượng
+            adjustVolume(0.05f);
         } else if (key == KeyEvent.VK_ENTER) {
             if (panel.pauseMenuSelection == 0) {
                 // Resume
@@ -96,6 +102,25 @@ public class InputHandler extends GameComponent {
         } else if (key == KeyEvent.VK_ESCAPE) {
             // Resume khi bấm ESC
             resumeGame();
+        }
+    }
+    
+    /**
+     * Điều chỉnh âm lượng toàn cục
+     */
+    private void adjustVolume(float delta) {
+        com.arkanoid.game.ui.Menu.globalVolume += delta;
+        // Giới hạn trong khoảng [0.0, 1.0]
+        if (com.arkanoid.game.ui.Menu.globalVolume < 0.0f) {
+            com.arkanoid.game.ui.Menu.globalVolume = 0.0f;
+        }
+        if (com.arkanoid.game.ui.Menu.globalVolume > 1.0f) {
+            com.arkanoid.game.ui.Menu.globalVolume = 1.0f;
+        }
+        // Cập nhật âm lượng của audio manager trong game
+        AudioManager audioManager = panel.getAudioManager();
+        if (audioManager != null) {
+            audioManager.updateVolume();
         }
     }
     
