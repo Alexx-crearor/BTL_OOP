@@ -1,11 +1,14 @@
 package com.arkanoid.game.entity;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
-public class Boss extends Item {
+/**
+ * Lớp Boss đại diện cho Boss (Trùm) trong game.
+ * Kế thừa từ GameObject để có các thuộc tính và methods cơ bản.
+ */
+public class Boss extends GameObject {
     // --- Thuộc tính của Trùm ---
     private final int MAX_HEALTH = 25; // Cần 25 lần bóng đập trúng để thắng
     private int currentHealth;
@@ -18,7 +21,14 @@ public class Boss extends Item {
     private final int SHIELD_INTERVAL = 600; // Tạo khiên mỗi 10 giây
     public boolean isShieldActive = false;
 
+    /**
+     * Constructor tạo Boss
+     * 
+     * @param screenWidth Chiều rộng màn hình
+     * @param screenHeight Chiều cao màn hình
+     */
     public Boss(int screenWidth, int screenHeight) {
+        super();
         this.width = 150;
         this.height = 50;
         this.x = screenWidth / 2 - this.width / 2; // Bắt đầu ở giữa
@@ -31,16 +41,15 @@ public class Boss extends Item {
     }
 
     /**
-     * Cập nhật logic của Trùm mỗi frame.
+     * Cập nhật logic của Trùm mỗi frame (override từ GameObject).
      * Di chuyển, đếm ngược tấn công và tạo khiên.
      */
-    public void update(int screenWidth) {
-        // 1. Di chuyển qua lại
+    @Override
+    public void update() {
+        // 1. Di chuyển qua lại (cần screenWidth từ bên ngoài)
         x += dx;
-        if (x <= 0 || x + width >= screenWidth) {
-            dx = -dx; // Đảo chiều khi chạm biên
-        }
-
+        // Boundary check sẽ được xử lý trong updateWithBoundary()
+        
         // 2. Đếm ngược để tấn công
         if (attackCooldown > 0) {
             attackCooldown--;
@@ -51,30 +60,57 @@ public class Boss extends Item {
             shieldCooldown--;
         }
     }
+    
+    /**
+     * Cập nhật với boundary checking
+     * 
+     * @param screenWidth Chiều rộng màn hình
+     */
+    public void updateWithBoundary(int screenWidth) {
+        // Di chuyển
+        x += dx;
+        if (x <= 0 || x + width >= screenWidth) {
+            dx = -dx; // Đảo chiều khi chạm biên
+        }
+
+        // Đếm ngược cooldowns
+        if (attackCooldown > 0) {
+            attackCooldown--;
+        }
+
+        if (!isShieldActive && shieldCooldown > 0) {
+            shieldCooldown--;
+        }
+    }
 
     /**
-     * Vẽ Trùm và thanh máu của nó.
+     * Vẽ Trùm và thanh máu của nó (override từ GameObject).
+     * 
+     * @param g Graphics context
      */
-    public void draw(Graphics2D g) {
+    @Override
+    public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        
         // Vẽ thân trùm (bạn có thể thay bằng ảnh)
-        g.setColor(new Color(139, 0, 0)); // Màu đỏ sẫm
-        g.fillRect(x, y, width, height);
+        g2d.setColor(new Color(139, 0, 0)); // Màu đỏ sẫm
+        g2d.fillRect(x, y, width, height);
 
         // Vẽ mắt (để trông ngầu hơn)
-        g.setColor(Color.YELLOW);
-        g.fillOval(x + width / 2 - 15, y + 15, 30, 20);
+        g2d.setColor(Color.YELLOW);
+        g2d.fillOval(x + width / 2 - 15, y + 15, 30, 20);
 
         // Vẽ thanh máu
         // Nền thanh máu
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(x, y - 20, width, 10);
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(x, y - 20, width, 10);
         // Máu hiện tại
-        g.setColor(Color.RED);
+        g2d.setColor(Color.RED);
         double healthPercentage = (double) currentHealth / MAX_HEALTH;
-        g.fillRect(x, y - 20, (int)(width * healthPercentage), 10);
+        g2d.fillRect(x, y - 20, (int)(width * healthPercentage), 10);
         // Viền
-        g.setColor(Color.WHITE);
-        g.drawRect(x, y - 20, width, 10);
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(x, y - 20, width, 10);
     }
 
     /**
@@ -115,7 +151,11 @@ public class Boss extends Item {
         return false;
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+    /**
+     * Override getBounds từ GameObject
+     */
+    @Override
+    public java.awt.Rectangle getBounds() {
+        return new java.awt.Rectangle(x, y, width, height);
     }
 }

@@ -25,8 +25,11 @@ timeout /t 1 /nobreak >nul
 
 echo [STARTING GAME] Please wait...
 echo.
+echo [DEBUG] Font loading fix applied - custom font should work now
+echo.
 REM Run with optimized JVM flags for better performance
-java -Xms256m -Xmx512m -XX:+UseG1GC -jar target\arkanoid-game-1.0-SNAPSHOT.jar
+REM Added file.encoding to ensure proper font handling
+java -Xms256m -Xmx512m -XX:+UseG1GC -Dfile.encoding=UTF-8 -jar target\arkanoid-game-1.0-SNAPSHOT.jar
 
 if %errorlevel% neq 0 (
     echo.

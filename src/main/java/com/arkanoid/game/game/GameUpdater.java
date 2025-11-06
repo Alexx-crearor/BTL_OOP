@@ -396,7 +396,7 @@ public class GameUpdater extends GameComponent {
      */
     private void updateBoss() {
         // 1. Cập nhật di chuyển của trùm
-        panel.boss.update(getGameWidth());
+        panel.boss.updateWithBoundary(getGameWidth());
 
         // 2. Xử lý bắn đạn
         if (panel.boss.canAttack()) {
