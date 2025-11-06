@@ -20,7 +20,7 @@ public class FontManager {
      */
     private static void loadCustomFont() {
         try {
-            InputStream fontStream = FontManager.class.getResourceAsStream("/Font/ByteBounce.ttf");
+            InputStream fontStream = FontManager.class.getResourceAsStream("/font/ByteBounce.ttf");
             if (fontStream != null) {
                 customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
                 System.out.println("Custom font loaded successfully: ByteBounce");
