@@ -21,13 +21,48 @@ import com.arkanoid.game.util.FontManager;
 import com.arkanoid.game.util.HighScoreEntry;
 import com.arkanoid.game.util.HighScoreManager;
 
+// ============================================================
+// CLASS: HighScorePanel - Hiển thị top 10 high scores
+// ============================================================
+
 /**
- * Panel hiển thị bảng xếp hạng high scores
+ * Class HighScorePanel - Dialog hiển thị bảng xếp hạng
+ * 
+ * TRÁCH NHIỆM:
+ * - Load top 10 high scores từ HighScoreManager
+ * - Hiển thị ranking table với header columns
+ * - Alternate row colors (dark/darker) cho dễ đọc
+ * - Close button để đóng dialog
+ * 
+ * UI LAYOUT:
+ * ```
+ * +--------------------------------+
+ * |    TOP 10 HIGH SCORES          | (Header - Gold)
+ * +--------------------------------+
+ * | Rank | Name     | Score | Date | (Table Header)
+ * +--------------------------------+
+ * |  1   | Alice    | 12345 | ...  | (Row 1 - Dark)
+ * |  2   | Bob      | 11000 | ...  | (Row 2 - Darker)
+ * |  3   | Charlie  | 10500 | ...  | (Row 3 - Dark)
+ * | ...  | ...      | ...   | ...  |
+ * +--------------------------------+
+ * |        [CLOSE BUTTON]          |
+ * +--------------------------------+
+ * ```
+ * 
+ * @author Arkanoid Game Team
+ * @version 1.0
  */
 public class HighScorePanel extends JFrame {
+    /** High score manager để load scores */
     private HighScoreManager highScoreManager;
+    
+    /** Close button */
     private JButton closeButton;
     
+    /**
+     * Constructor - Tạo và hiển thị high score panel
+     */
     public HighScorePanel() {
         highScoreManager = new HighScoreManager();
         
@@ -40,20 +75,23 @@ public class HighScorePanel extends JFrame {
         initComponents();
     }
     
+    /**
+     * Initialize UI components (header + table + close button)
+     */
     private void initComponents() {
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(new Color(20, 20, 40));
         
-        // Header
+        // ---- HEADER "TOP 10 HIGH SCORES" ----
         JPanel headerPanel = new JPanel();
         headerPanel.setBackground(new Color(20, 20, 40));
         
         JLabel titleLabel = new JLabel("TOP 10 HIGH SCORES");
         titleLabel.setFont(FontManager.getFont(Font.BOLD, 36));
-        titleLabel.setForeground(new Color(255, 215, 0));
+        titleLabel.setForeground(new Color(255, 215, 0)); // Gold
         headerPanel.add(titleLabel);
         
-        // Main panel với danh sách scores
+        // ---- MAIN PANEL (Table) ----
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(new Color(20, 20, 40));

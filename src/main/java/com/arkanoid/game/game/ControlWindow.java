@@ -14,11 +14,28 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.arkanoid.game.entity.Item;
 import com.arkanoid.game.ui.HighScoreDialog;
 import com.arkanoid.game.util.HighScoreManager;
 
 public class ControlWindow extends JPanel implements Runnable, KeyListener {
+    
+    /**
+     * Simple data holder class để thay thế Item
+     * Chỉ chứa các thuộc tính cơ bản: vị trí, kích thước, vận tốc
+     */
+    public static class SimpleGameObject {
+        public int x, y, width, height, dx, dy;
+        
+        public SimpleGameObject() {
+            this.x = 0;
+            this.y = 0;
+            this.width = 0;
+            this.height = 0;
+            this.dx = 0;
+            this.dy = 0;
+        }
+    }
+    
     // Trạng thái phím
     public boolean movingLeft = false, movingRight = false;
 
@@ -26,9 +43,9 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
     public static final int WIDTH = 800, HEIGHT = 600;
 
     // Paddle, bóng và gạch
-    public final Item player = new Item();
-    public final Item ball = new Item();
-    public Item[] bricks;
+    public final SimpleGameObject player = new SimpleGameObject();
+    public final SimpleGameObject ball = new SimpleGameObject();
+    public SimpleGameObject[] bricks;
     public int amount = 0;
     private Thread gameThread;
     public final java.util.Random random = new java.util.Random();
@@ -117,10 +134,10 @@ public class ControlWindow extends JPanel implements Runnable, KeyListener {
         ballStarted = false;
 
         // Bricks
-        bricks = new Item[BRICK_X * BRICK_Y];
+        bricks = new SimpleGameObject[BRICK_X * BRICK_Y];
         for (int i = 0; i < BRICK_X; i++) {
             for (int j = 0; j < BRICK_Y; j++) {
-                bricks[amount] = new Item();
+                bricks[amount] = new SimpleGameObject();
                 bricks[amount].x = i * BRICK_WIDTH + 150;
                 bricks[amount].y = j * BRICK_HEIGHT + 30;
                 amount++;

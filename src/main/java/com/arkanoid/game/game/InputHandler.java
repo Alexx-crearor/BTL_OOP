@@ -5,14 +5,43 @@ import java.awt.event.KeyEvent;
 import com.arkanoid.game.entity.Ball;
 import com.arkanoid.game.entity.Laser;
 
+// ============================================================
+// CLASS: InputHandler - Xử lý tất cả keyboard input trong game
+// ============================================================
+
 /**
- * InputHandler - Xử lý tất cả keyboard input
- * Chịu trách nhiệm:
- * - Xử lý pause menu navigation
- * - Di chuyển paddle (trái/phải)
- * - Bắn laser, bắt đầu game (space)
- * - Pause/Resume (P, ESC)
- * - Game over actions (Enter, ESC)
+ * Class InputHandler - Xử lý keyboard input cho GamePanel
+ * 
+ * EXTENDS: GameComponent (có access to panel fields)
+ * 
+ * TRÁCH NHIỆM:
+ * 1. Paddle movement (LEFT/RIGHT arrows)
+ * 2. Space key actions (release ball, fire laser)
+ * 3. Pause controls (P, ESC keys)
+ * 4. Pause menu navigation (UP/DOWN/ENTER, volume LEFT/RIGHT)
+ * 5. Game over input (ENTER to restart, ESC to quit)
+ * 
+ * KEY MAPPINGS:
+ * ```
+ * GAMEPLAY:
+ *   LEFT/RIGHT → Paddle movement
+ *   SPACE → Release ball (first time) / Fire laser (with power-up)
+ *   P → Pause/Resume
+ *   ESC → Open pause menu (hoặc resume nếu đang trong menu)
+ * 
+ * PAUSE MENU:
+ *   UP/DOWN → Navigate options (Resume/Quit)
+ *   LEFT/RIGHT → Adjust volume (-5% / +5%)
+ *   ENTER → Confirm selection
+ *   ESC → Resume game (close menu)
+ * 
+ * GAME OVER:
+ *   ENTER → Restart game (level 1, 3 lives, score=0)
+ *   ESC → Quit to menu
+ * ```
+ * 
+ * @author Arkanoid Game Team
+ * @version 1.0
  */
 public class InputHandler extends GameComponent {
     
@@ -20,19 +49,28 @@ public class InputHandler extends GameComponent {
         super(panel);
     }
     
+    // ============================================================
+    // KEY PRESSED - Main input handler
+    // ============================================================
+    
     /**
-     * Xử lý khi phím được nhấn
+     * Handle key pressed events
+     * 
+     * ROUTING:
+     * 1. If pause menu visible → handlePauseMenuInput()
+     * 2. Else if game over → handleGameOverInput()
+     * 3. Else → gameplay input (paddle, space, pause)
      */
     public void handleKeyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         
-        // Xử lý pause menu navigation
+        // ---- PAUSE MENU NAVIGATION ----
         if (panel.showPauseMenu && !panel.gameOver) {
             handlePauseMenuInput(key);
-            return;
+            return; // Don't process other keys
         }
         
-        // Xử lý di chuyển paddle
+        // ---- PADDLE MOVEMENT ----
         if (key == KeyEvent.VK_LEFT) {
             panel.movingLeft = true;
         }
@@ -40,54 +78,77 @@ public class InputHandler extends GameComponent {
             panel.movingRight = true;
         }
         
-        // Xử lý phím Space
+        // ---- SPACE KEY (Release ball / Fire laser) ----
         if (key == KeyEvent.VK_SPACE) {
             handleSpaceKey();
         }
         
-        // Xử lý phím P (pause)
+        // ---- PAUSE TOGGLE (P key) ----
         if (key == KeyEvent.VK_P) {
             togglePause();
         }
         
-        // Xử lý phím ESC (pause/unpause)
+        // ---- ESC KEY (Open/close pause menu) ----
         if (!panel.gameOver && key == KeyEvent.VK_ESCAPE) {
             togglePause();
         }
         
-        // Xử lý game over screen
+        // ---- GAME OVER INPUT ----
         if (panel.gameOver) {
             handleGameOverInput(key);
         }
     }
     
+    // ============================================================
+    // KEY RELEASED - Handle key release
+    // ============================================================
+    
     /**
-     * Xử lý khi phím được thả
+     * Handle key released events (stop paddle movement)
      */
     public void handleKeyReleased(KeyEvent e) {
         int key = e.getKeyCode();
         
+        // Stop paddle movement
         if (key == KeyEvent.VK_LEFT) {
             panel.movingLeft = false;
         }
         if (key == KeyEvent.VK_RIGHT) {
             panel.movingRight = false;
         }
+        
+        // Reset space flag
         if (key == KeyEvent.VK_SPACE) {
             panel.spacePressed = false;
         }
     }
     
+    // ============================================================
+    // PAUSE MENU INPUT - Navigation và volume control
+    // ============================================================
+    
     /**
-     * Xử lý input trong pause menu
+     * Handle input trong pause menu
+     * 
+     * CONTROLS:
+     * - UP/DOWN: Toggle between Resume (0) ↔ Quit (1)
+     * - LEFT/RIGHT: Volume -5% / +5%
+     * - ENTER: Confirm selection (resume hoặc quit)
+     * - ESC: Resume ngay lập tức
      */
     private void handlePauseMenuInput(int key) {
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
             // Toggle giữa Resume (0) và Quit (1)
             panel.pauseMenuSelection = 1 - panel.pauseMenuSelection;
+        } else if (key == KeyEvent.VK_LEFT) {
+            // Giảm volume 5%
+            adjustVolume(-0.05f);
+        } else if (key == KeyEvent.VK_RIGHT) {
+            // Tăng volume 5%
+            adjustVolume(0.05f);
         } else if (key == KeyEvent.VK_ENTER) {
             if (panel.pauseMenuSelection == 0) {
-                // Resume
+                // Resume game
                 resumeGame();
             } else {
                 // Quit to Menu
@@ -96,6 +157,25 @@ public class InputHandler extends GameComponent {
         } else if (key == KeyEvent.VK_ESCAPE) {
             // Resume khi bấm ESC
             resumeGame();
+        }
+    }
+    
+    /**
+     * Điều chỉnh âm lượng toàn cục
+     */
+    private void adjustVolume(float delta) {
+        com.arkanoid.game.ui.Menu.globalVolume += delta;
+        // Giới hạn trong khoảng [0.0, 1.0]
+        if (com.arkanoid.game.ui.Menu.globalVolume < 0.0f) {
+            com.arkanoid.game.ui.Menu.globalVolume = 0.0f;
+        }
+        if (com.arkanoid.game.ui.Menu.globalVolume > 1.0f) {
+            com.arkanoid.game.ui.Menu.globalVolume = 1.0f;
+        }
+        // Cập nhật âm lượng của audio manager trong game
+        AudioManager audioManager = panel.getAudioManager();
+        if (audioManager != null) {
+            audioManager.updateVolume();
         }
     }
     
